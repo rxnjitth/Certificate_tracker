@@ -24,7 +24,7 @@ pipeline {
             steps {
                 echo 'Building Docker images...'
                 script {
-                    sh 'docker compose build'
+                    sh 'docker-compose build'
                 }
             }
         }
@@ -34,8 +34,8 @@ pipeline {
                 echo 'Running tests...'
                 script {
                     // Add your test commands here
-                    sh 'docker compose run --rm client npm test || true'
-                    sh 'docker compose run --rm server npm test || true'
+                    sh 'docker-compose run --rm client npm test || true'
+                    sh 'docker-compose run --rm server npm test || true'
                 }
             }
         }
@@ -44,8 +44,8 @@ pipeline {
             steps {
                 echo 'Deploying application...'
                 script {
-                    sh 'docker compose down || true'
-                    sh 'docker compose up -d'
+                    sh 'docker-compose down || true'
+                    sh 'docker-compose up -d'
                 }
             }
         }
