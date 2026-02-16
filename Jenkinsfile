@@ -1,6 +1,13 @@
 pipeline {
     agent any
     
+    triggers {
+        // Poll repository every 15 minutes for changes
+        pollSCM('H/15 * * * *')
+        // Or run daily at midnight
+        cron('0 0 * * *')
+    }
+    
     environment {
         DOCKER_COMPOSE_FILE = 'docker-compose.yml'
     }
@@ -17,7 +24,7 @@ pipeline {
             steps {
                 echo 'Building Docker images...'
                 script {
-                    sh 'docker-compose build'
+                    sh 'docker compose build'
                 }
             }
         }
@@ -27,8 +34,8 @@ pipeline {
                 echo 'Running tests...'
                 script {
                     // Add your test commands here
-                    sh 'docker-compose run --rm client npm test || true'
-                    sh 'docker-compose run --rm server npm test || true'
+                    sh 'docker compose run --rm client npm test || true'
+                    sh 'docker compose run --rm server npm test || true'
                 }
             }
         }
@@ -37,8 +44,8 @@ pipeline {
             steps {
                 echo 'Deploying application...'
                 script {
-                    sh 'docker-compose down'
-                    sh 'docker-compose up -d'
+                    sh 'docker compose down || true'
+                    sh 'docker compose up -d'
                 }
             }
         }
@@ -53,7 +60,7 @@ pipeline {
         }
         always {
             echo 'Cleaning up...'
-            sh 'docker system prune -f'
+            sh 'docker system prune -f || true'
         }
     }
 }
