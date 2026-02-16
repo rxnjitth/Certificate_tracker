@@ -2,10 +2,10 @@ pipeline {
     agent any
     
     triggers {
-        // Poll repository every 15 minutes for changes
-        pollSCM('H/15 * * * *')
-        // Or run daily at midnight
-        cron('0 0 * * *')
+        // Trigger automatically on push via webhook
+        githubPush()
+        // Backup: Poll every minute if webhook fails
+        pollSCM('* * * * *')
     }
     
     environment {
